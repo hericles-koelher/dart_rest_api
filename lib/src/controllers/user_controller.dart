@@ -67,7 +67,7 @@ class UserController {
       await users.insertOne(user.toJson());
 
       return Response.ok("User successfully registered");
-    } on UnrecognizedKeysException catch (e) {
+    } on MissingRequiredKeysException catch (e) {
       return Response(
         HttpStatus.badRequest,
         body: e.message,
