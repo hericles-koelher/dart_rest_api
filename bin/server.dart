@@ -1,5 +1,5 @@
-import 'package:dart_rest_api/src/configs/environment.dart';
-import 'package:dart_rest_api/src/controllers/user_controller.dart';
+import 'package:dart_rest_api/dart_rest_api.dart';
+import 'package:dart_rest_api/src/domain.dart';
 import 'package:mongo_dart/mongo_dart.dart';
 import 'package:shelf/shelf_io.dart';
 import 'package:shelf_router/shelf_router.dart';
@@ -22,7 +22,7 @@ void main() async {
   api.mount(
     "/user/",
     UserController(
-      mongoDb.collection("users"),
+      UserRepository(mongoDb.collection("users")),
       Environment.secretKey,
     ).router,
   );
@@ -32,4 +32,6 @@ void main() async {
     Environment.serverAddress,
     int.parse(Environment.serverPort),
   );
+
+  print("Listening on ${Environment.serverAddress}:${Environment.serverPort}");
 }
