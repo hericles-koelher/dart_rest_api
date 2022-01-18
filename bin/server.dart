@@ -20,7 +20,7 @@ void main() async {
   var api = Router();
 
   api.mount(
-    "/user/",
+    "/users/",
     UserController(
       UserRepository(mongoDb.collection("users")),
       Environment.secretKey,

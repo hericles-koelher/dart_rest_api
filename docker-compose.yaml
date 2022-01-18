@@ -1,7 +1,7 @@
 version: "3"
 
 services:
-  # good_morning_phrases:
+  # dictionary_api:
   #   build: .
   #   ports:
   #     - "8080:8080"

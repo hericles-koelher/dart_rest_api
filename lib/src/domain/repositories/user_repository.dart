@@ -27,7 +27,14 @@ class UserRepository {
       );
     }
 
-    // Saving user in MongoDb
+    // Validating user entity...
+    validateUser(
+      username: username,
+      email: email,
+      password: password,
+    );
+
+    // Creating user entity
     String salt = generateSalt();
 
     var user = User(
@@ -37,9 +44,7 @@ class UserRepository {
       password: hashPassword(password, salt),
     );
 
-    // User validation...
-    validateUser(user);
-
+    // Saving user in database
     await users.insertOne(user.toJson());
   }
 }
