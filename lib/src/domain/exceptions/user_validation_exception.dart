@@ -1,6 +1,5 @@
 class UserValidationException implements Exception {
-  final List<String> fields;
-  final List<String> problems;
+  final String message;
 
-  UserValidationException(this.fields, this.problems);
+  UserValidationException(this.message);
 }

@@ -62,11 +62,11 @@ Before you begin, you will need to have [Dart](https://dart.dev/), [Docker](http
 
 #### Running the application
 
-Step 0 (optional) - Edit [docker-compose.yaml](./docker-compose.yaml) to your heart's content.
+Step 0 - Edit [docker-compose.yaml](./docker-compose.yaml) and setup all MongoDB variables.
 
 Step 1 - Run docker-compose and create the necessary containers.
 
-Step 2 (optional) - Install [redis-commander](https://github.com/joeferner/redis-commander) (this will possibilite us to see the content in Redis).
+Step 2 - Install [redis-commander](https://github.com/joeferner/redis-commander) to see the content saved on Redis.
 
 Step 3 - Setup environment variables. To do that you must create
 an ".env" file at project root and add the following lines:

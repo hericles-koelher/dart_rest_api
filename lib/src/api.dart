@@ -1,7 +1,15 @@
 // Controllers
 
-export 'api/controllers/user_controller.dart';
+export 'api/controllers/auth_controller.dart';
 
-// Representation Entities
+// Entities
 
-export 'api/entities/user_representation.dart';
+export 'api/entities/token_pair.dart';
+
+// Services
+
+export 'api/services/token_service.dart';
+
+// Utils
+
+export 'api/utils/middleware.dart';

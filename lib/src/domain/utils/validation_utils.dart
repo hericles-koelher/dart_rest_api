@@ -2,30 +2,62 @@ import 'package:validators/validators.dart';
 
 import '../../domain.dart';
 
-void validateUser({
+void validateUserRegisterFields({
   required String username,
   required String email,
   required String password,
 }) {
-  List<String> fields = [];
-  List<String> problems = [];
+  bool flag = false;
+  String message = "Errors were found during field validation:\n";
+  String? fieldStringAux;
 
-  if (username.isEmpty) {
-    fields.add("username");
-    problems.add("Username can't be empty");
+  if ((fieldStringAux = _usernameVal(username)) != null) {
+    flag = true;
+    message += "\t$fieldStringAux\n";
   }
 
-  if (!isEmail(email)) {
-    fields.add("username");
-    problems.add("Invalid e-mail");
+  if ((fieldStringAux = _emailVal(email)) != null) {
+    flag = true;
+    message += "\t$fieldStringAux\n";
   }
 
-  if (!isLength(password, 8)) {
-    fields.add("username");
-    problems.add("Password must have at least 8 characters");
+  if ((fieldStringAux = _passwordVal(password)) != null) {
+    flag = true;
+    message += "\t$fieldStringAux\n";
   }
 
-  if (fields.isNotEmpty) {
-    throw UserValidationException(fields, problems);
+  if (flag) {
+    throw UserValidationException(message);
   }
 }
+
+void validateUserLoginFields({
+  required String email,
+  required String password,
+}) {
+  bool flag = false;
+  String message = "Errors were found during field validation:\n";
+  String? fieldStringAux;
+
+  if ((fieldStringAux = _emailVal(email)) != null) {
+    flag = true;
+    message += "\t$fieldStringAux\n";
+  }
+
+  if ((fieldStringAux = _passwordVal(password)) != null) {
+    flag = true;
+    message += "\t$fieldStringAux\n";
+  }
+
+  if (flag) {
+    throw UserValidationException(message);
+  }
+}
+
+String? _usernameVal(String username) =>
+    username.isEmpty ? "Username can't be empty" : null;
+
+String? _emailVal(String email) => !isEmail(email) ? "Invalid e-mail" : null;
+
+String? _passwordVal(String password) =>
+    !isLength(password, 8) ? "Password must have at least 8 characters" : null;
