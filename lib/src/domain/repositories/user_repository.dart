@@ -45,26 +45,15 @@ class UserRepository {
     await users.insertOne(user.toJson());
   }
 
-  Future<User> getUserWithEmailAndPassword(
-    String email,
-    String password,
-  ) async {
+  Future<User> findByEmail(String email) async {
     var userJson = await users.findOne(
       where.eq("email", email),
     );
 
     if (userJson == null) {
-      throw UserValidationException("Incorrect email and/or password");
+      throw UserValidationException("User not found");
     }
 
-    var possibleUser = User.fromJson(userJson);
-
-    var hashedUserJsonPassword = hashPassword(password, possibleUser.salt);
-
-    if (hashedUserJsonPassword != possibleUser.password) {
-      throw UserValidationException("Incorrect email and/or password");
-    }
-
-    return possibleUser;
+    return User.fromJson(userJson);
   }
 }

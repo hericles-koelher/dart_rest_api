@@ -61,3 +61,20 @@ String? _emailVal(String email) => !isEmail(email) ? "Invalid e-mail" : null;
 
 String? _passwordVal(String password) =>
     !isLength(password, 8) ? "Password must have at least 8 characters" : null;
+
+void validateWord(String word) {
+  if (word.isEmpty) {
+    throw WordValidationException("Empty word isn't valid");
+  }
+  if (word.trim().contains(RegExp(r"(\s|_|-)"))) {
+    throw WordValidationException(
+      "More than one word were found in '$word'",
+    );
+  }
+}
+
+void validateMeaning(String meaning) {
+  if (meaning.isEmpty) {
+    throw WordValidationException("Empty meaning isn't valid");
+  }
+}

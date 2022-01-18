@@ -18,28 +18,38 @@ void main() async {
     print("Created 'users' collection");
   }
 
-  var api = Router();
+  var apiHandler = Router();
 
   var authController = AuthController(
-    userRepository: UserRepository(mongoDb.collection("users")),
-    tokenService: await TokenService.createService(
-      host: Environment.serverAddress,
-      port: 6379,
-      secret: Environment.secretKey,
-    ),
+      userRepository: UserRepository(mongoDb.collection("users")),
+      tokenService: await TokenService.createService(
+        host: Environment.serverAddress,
+        port: 6379,
+        secret: Environment.secretKey,
+      ),
+      secret: Environment.secretKey);
+
+  apiHandler.mount(
+    "/auth/",
+    authController.handler,
   );
 
-  api.mount(
-    "/auth/",
-    authController.router,
+  var wordsController = WordsController(
+    WordRepository(mongoDb.collection("words")),
+  );
+
+  apiHandler.mount(
+    "/words/",
+    wordsController.handler,
   );
 
   var server = Pipeline()
+      .addMiddleware(logRequests())
       .addMiddleware(authMiddleware(Environment.secretKey))
-      .addHandler(api);
+      .addHandler(apiHandler);
 
-  serve(
-    api,
+  await serve(
+    server,
     Environment.serverAddress,
     int.parse(Environment.serverPort),
   );

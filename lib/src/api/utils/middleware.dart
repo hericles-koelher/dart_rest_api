@@ -28,7 +28,9 @@ Middleware checkAuthMiddleware() {
   return createMiddleware(
     requestHandler: (Request request) {
       if (request.context['authDetails'] == null) {
-        return Response.forbidden('Not authorised to perform this action.');
+        return Response.forbidden(
+          'Not authorised to perform this action.',
+        );
       }
       return null;
     },

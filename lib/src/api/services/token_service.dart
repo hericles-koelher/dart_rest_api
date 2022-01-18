@@ -3,6 +3,8 @@ import 'package:dart_rest_api/dart_rest_api.dart';
 import 'package:redis/redis.dart';
 import 'package:uuid/uuid.dart';
 
+const _tokenDuration = Duration(minutes: 30);
+
 // Using the rotation strategy to invalidate jwt's.
 class TokenService {
   final String secret;
@@ -39,7 +41,7 @@ class TokenService {
       jwtId: jwtId,
     );
 
-    final refreshTokenExpiry = Duration(seconds: 60);
+    final refreshTokenExpiry = Duration(minutes: _tokenDuration.inMinutes * 2);
 
     final refreshToken = _generateJwt(
       subject: userId,
@@ -76,7 +78,7 @@ class TokenService {
   String _generateJwt({
     required String subject,
     String? jwtId,
-    Duration expiry = const Duration(seconds: 30),
+    Duration expiry = _tokenDuration,
   }) {
     var now = DateTime.now();
 

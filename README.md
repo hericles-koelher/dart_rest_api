@@ -46,9 +46,9 @@ Dart REST API - is just an little project made with the purpose of study back-en
 ## Features
 
 - [x] User Register
-- [ ] User Auth with JsonWebToken
-- [ ] User Account Deletion
-- [ ] CRUD "Words" and their meaning
+- [x] User Auth with JsonWebToken
+- [x] CRUD "Words" entity
+- [x] Only logged users can request and update data from "words" endpoint
 
 ---
 
@@ -62,28 +62,13 @@ Before you begin, you will need to have [Dart](https://dart.dev/), [Docker](http
 
 #### Running the application
 
-Step 0 - Edit [docker-compose.yaml](./docker-compose.yaml) and setup all MongoDB variables.
+Step 1 - From the root folder run docker-compose and create the necessary containers.
 
-Step 1 - Run docker-compose and create the necessary containers.
-
-Step 2 - Install [redis-commander](https://github.com/joeferner/redis-commander) to see the content saved on Redis.
-
-Step 3 - Setup environment variables. To do that you must create
-an ".env" file at project root and add the following lines:
-
-```
-SECRET_KEY=your_secret_key
-
-MONGO_URL=mongodb://your_mongo_user:your_password@localhost:27017/your_database_name?authSource=admin
-
-SERVER_ADDRESS=localhost
-
-SERVER_PORT=8080
+```bash
+$ docker-compose up -d
 ```
 
-PS: All "your" fields values related with MongoDB should match with the configuration in [docker-compose.yaml](./docker-compose.yaml).
-
-Step 4 - Open the project with your IDE and run it by clicking play or via command line with:
+Step 2 - Open the project with your IDE and run it by clicking play or via command line with:
 
 ```bash
 # command line in the root of your project
