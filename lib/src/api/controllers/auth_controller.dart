@@ -1,11 +1,10 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:dart_jsonwebtoken/dart_jsonwebtoken.dart';
-import 'package:dart_rest_api/src/api.dart';
 import 'package:shelf/shelf.dart';
 import 'package:shelf_router/shelf_router.dart';
 
+import '../../api.dart';
 import '../../domain.dart';
 
 part 'auth_controller.g.dart';
@@ -28,10 +27,20 @@ class AuthController {
         await request.readAsString(),
       );
 
+      if (json.isEmpty ||
+          !json.containsKey("username") ||
+          !json.containsKey("email") ||
+          !json.containsKey("password")) {
+        return Response(
+          HttpStatus.badRequest,
+          body: "Please inform 'username', 'email' and 'password'",
+        );
+      }
+
       await userRepository.create(
-        username: json["username"] ?? "",
-        email: json["email"] ?? "",
-        password: json["password"] ?? "",
+        username: json["username"],
+        email: json["email"],
+        password: json["password"],
       );
 
       return Response.ok("User successfully registered");
@@ -54,6 +63,15 @@ class AuthController {
       Map<String, dynamic> json = jsonDecode(
         await request.readAsString(),
       );
+
+      if (json.isEmpty ||
+          !json.containsKey("email") ||
+          !json.containsKey("password")) {
+        return Response(
+          HttpStatus.badRequest,
+          body: "Empty e-mail and/or password",
+        );
+      }
 
       User user = await userRepository.findByEmail(
         json["email"],

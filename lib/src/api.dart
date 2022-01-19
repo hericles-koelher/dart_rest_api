@@ -1,7 +1,7 @@
 // Controllers
 
 export 'api/controllers/auth_controller.dart';
-export 'api/controllers/words_controller.dart';
+export 'api/controllers/expressions_controller.dart';
 
 // Entities
 

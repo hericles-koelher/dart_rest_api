@@ -22,7 +22,7 @@ class MongoUserRepository extends MongoBaseRepository
     }
 
     // Validating user entity...
-    validateUserRegisterFields(
+    validateUserCreationData(
       username: username,
       email: email,
       password: password,

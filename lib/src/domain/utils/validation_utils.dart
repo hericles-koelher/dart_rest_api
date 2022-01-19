@@ -2,28 +2,27 @@ import 'package:validators/validators.dart';
 
 import '../../domain.dart';
 
-void validateUserRegisterFields({
+void validateUserCreationData({
   required String username,
   required String email,
   required String password,
 }) {
   bool flag = false;
-  String message = "Errors were found during field validation:\n";
-  String? fieldStringAux;
+  String message = "Errors were found during data validation:\n";
 
-  if ((fieldStringAux = _usernameVal(username)) != null) {
+  if (username.isEmpty) {
     flag = true;
-    message += "\t$fieldStringAux\n";
+    message += "\tUsername can't be empty\n";
   }
 
-  if ((fieldStringAux = _emailVal(email)) != null) {
+  if (!isEmail(email)) {
     flag = true;
-    message += "\t$fieldStringAux\n";
+    message += "\tInvalid e-mail\n";
   }
 
-  if ((fieldStringAux = _passwordVal(password)) != null) {
+  if (!isLength(password, 8)) {
     flag = true;
-    message += "\t$fieldStringAux\n";
+    message += "\tPassword must have at least 8 characters\n";
   }
 
   if (flag) {
@@ -31,50 +30,12 @@ void validateUserRegisterFields({
   }
 }
 
-void validateUserLoginFields({
-  required String email,
-  required String password,
-}) {
-  bool flag = false;
-  String message = "Errors were found during field validation:\n";
-  String? fieldStringAux;
-
-  if ((fieldStringAux = _emailVal(email)) != null) {
-    flag = true;
-    message += "\t$fieldStringAux\n";
+void validateExpression(String expression, String meaning) {
+  if (expression.isEmpty) {
+    throw ExpressionValidationException("Empty expression isn't valid");
   }
 
-  if ((fieldStringAux = _passwordVal(password)) != null) {
-    flag = true;
-    message += "\t$fieldStringAux\n";
-  }
-
-  if (flag) {
-    throw UserValidationException(message);
-  }
-}
-
-String? _usernameVal(String username) =>
-    username.isEmpty ? "Username can't be empty" : null;
-
-String? _emailVal(String email) => !isEmail(email) ? "Invalid e-mail" : null;
-
-String? _passwordVal(String password) =>
-    !isLength(password, 8) ? "Password must have at least 8 characters" : null;
-
-void validateWord(String word) {
-  if (word.isEmpty) {
-    throw WordValidationException("Empty word isn't valid");
-  }
-  if (word.trim().contains(RegExp(r"(\s|_|-)"))) {
-    throw WordValidationException(
-      "More than one word were found in '$word'",
-    );
-  }
-}
-
-void validateMeaning(String meaning) {
   if (meaning.isEmpty) {
-    throw WordValidationException("Empty meaning isn't valid");
+    throw ExpressionValidationException("Empty meaning isn't valid");
   }
 }

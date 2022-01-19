@@ -45,10 +45,12 @@ Dart REST API - is just an little project made with the purpose of study back-en
 
 ## Features
 
-- [x] User Register
-- [x] User Auth with JsonWebToken
-- [x] CRUD "Words" entity
-- [x] Only logged users can request and update data from "words" endpoint
+- [x] User register
+- [x] User auth with JsonWebToken
+- [ ] User account update
+- [ ] User account delete
+- [x] CRUD operations with [Expressions](./lib/src/domain/entities/expression.dart)
+- [x] Only logged users have authorization to access data from "expressions" endpoint
 
 ---
 

@@ -7,9 +7,11 @@ part of 'environment.dart';
 // **************************************************************************
 
 class _Environment {
-  static const secretKey = '19AD775CB752A2936E3FCEFC82334';
-  static const mongoUrl =
+  static const String secretKey = '19AD775CB752A2936E3FCEFC82334';
+  static const String mongoUrl =
       'mongodb://root:example@localhost:27017/dart_rest_api?authSource=admin';
-  static const serverAddress = 'localhost';
-  static const serverPort = '8080';
+  static const String serverAddress = 'localhost';
+  static const int serverPort = 8080;
+  static const String redisHost = 'localhost';
+  static const int redisPort = 6379;
 }

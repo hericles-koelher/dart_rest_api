@@ -24,13 +24,13 @@ void main() async {
     authController.handler,
   );
 
-  var wordsController = WordsController(
+  var expressionsController = ExpressionsController(
     kiwiContainer.resolve(),
   );
 
   apiHandler.mount(
-    "/words/",
-    wordsController.handler,
+    "/expressions/",
+    expressionsController.handler,
   );
 
   var server = Pipeline()
@@ -46,19 +46,20 @@ void main() async {
   await serve(
     server,
     Environment.serverAddress,
-    int.parse(Environment.serverPort),
+    Environment.serverPort,
   );
 
   print("Listening on ${Environment.serverAddress}:${Environment.serverPort}");
 }
 
 Future<void> createDependencies() async {
+  print("Creating dependencies");
   var mongoDb = Db(Environment.mongoUrl);
 
   await mongoDb.open();
   print('Connected to our database');
 
-  await createDatabasesIfNotExists(mongoDb);
+  await createCollectionsIfNotExists(mongoDb);
 
   var kiwiContainer = KiwiContainer();
 
@@ -69,23 +70,24 @@ Future<void> createDependencies() async {
       mongoDb.collection("counters"),
     ),
   );
-  kiwiContainer.registerInstance(
-    WordRepository(
-      mongoDb.collection("words"),
+  kiwiContainer.registerInstance<IExpressionRepository>(
+    MongoExpressionRepository(
+      mongoDb.collection("expressions"),
+      mongoDb.collection("counters"),
     ),
   );
 
   // Registering services
   kiwiContainer.registerInstance<ITokenService>(
     await TokenService.createService(
-      host: Environment.serverAddress,
-      port: 6379,
+      host: Environment.redisHost,
+      port: Environment.redisPort,
       secret: Environment.secretKey,
     ),
   );
 }
 
-Future<void> createDatabasesIfNotExists(Db mongoDb) async {
+Future<void> createCollectionsIfNotExists(Db mongoDb) async {
   var collectionNames = await mongoDb.getCollectionNames();
 
   if (!collectionNames.contains("counters")) {
@@ -98,8 +100,8 @@ Future<void> createDatabasesIfNotExists(Db mongoDb) async {
     print("Created 'users' collection");
   }
 
-  if (!collectionNames.contains("words")) {
-    await mongoDb.createCollection("words");
-    print("Created 'words' collection");
+  if (!collectionNames.contains("expressions")) {
+    await mongoDb.createCollection("expressions");
+    print("Created 'expressions' collection");
   }
 }
