@@ -5,7 +5,9 @@ export 'domain/entities/word.dart';
 
 // Repositories
 
-export 'domain/repositories/user_repository.dart';
+export 'domain/repositories/mongo_base_repository.dart';
+export 'domain/repositories/user_repository_int.dart';
+export 'domain/repositories/mongo_user_repository.dart';
 export 'domain/repositories/word_repository.dart';
 
 // Exceptions

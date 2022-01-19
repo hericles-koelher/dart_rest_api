@@ -11,8 +11,8 @@ import '../../domain.dart';
 part 'auth_controller.g.dart';
 
 class AuthController {
-  final UserRepository userRepository;
-  final TokenService tokenService;
+  final IUserRepository userRepository;
+  final ITokenService tokenService;
   final String secret;
 
   AuthController({
@@ -65,13 +65,20 @@ class AuthController {
       );
 
       if (hashedPassword != user.password) {
-        throw UserValidationException("Incorrect password");
+        return Response(
+          HttpStatus.badRequest,
+          body: "Incorrect email and/or password",
+        );
       }
 
-      var tokenPair = await tokenService.createTokenPair(user.email);
+      var tokenPair = await tokenService.createTokenPair(
+        user.id.toString(),
+      );
 
       return Response.ok(
-        jsonEncode(tokenPair.toJson()),
+        jsonEncode(
+          tokenPair.toJson(),
+        ),
         headers: {
           HttpHeaders.contentTypeHeader: ContentType.json.mimeType,
         },
@@ -81,10 +88,10 @@ class AuthController {
         HttpStatus.badRequest,
         body: e.message,
       );
-    } on UserValidationException catch (e) {
+    } on UserValidationException {
       return Response(
         HttpStatus.badRequest,
-        body: e.message,
+        body: "Incorrect email and/or password",
       );
     }
   }
@@ -92,28 +99,54 @@ class AuthController {
   @Route.post("/refreshToken")
   Future<Response> refreshToken(Request request) async {
     try {
-      var jsonToken = jsonDecode(
+      Map<String, dynamic> jsonRefreshToken = jsonDecode(
         await request.readAsString(),
       );
 
-      var token = TokenService.verifyToken(
-        jsonToken["refreshToken"] ?? "",
-        secret,
-      );
-
-      if (token == null) {
+      if (jsonRefreshToken.isEmpty ||
+          !jsonRefreshToken.containsKey("refreshToken")) {
         return Response(
           HttpStatus.badRequest,
-          body: 'Refresh token is not recognised.',
+          body: 'Empty refresh token is not valid',
         );
       }
 
-      await tokenService.removeRefreshToken(token.jwtId!);
+      var refreshTokenIsValid = tokenService.isValidToken(
+        jsonRefreshToken["refreshToken"],
+      );
 
-      var newTokenPair = await tokenService.createTokenPair(token.subject!);
+      if (!refreshTokenIsValid) {
+        return Response(
+          HttpStatus.badRequest,
+          body: 'Refresh token is not valid',
+        );
+      }
+
+      String tokenId = tokenService.getTokenId(
+        jsonRefreshToken["refreshToken"],
+      );
+
+      var dbToken = await tokenService.getRefreshToken(tokenId);
+
+      if (dbToken == null) {
+        return Response(
+          HttpStatus.badRequest,
+          body: 'Refresh token is not recognised',
+        );
+      }
+
+      await tokenService.removeRefreshToken(tokenId);
+
+      var newTokenPair = await tokenService.createTokenPair(
+        tokenService.getUserId(
+          jsonRefreshToken["refreshToken"],
+        ),
+      );
 
       return Response.ok(
-        jsonEncode(newTokenPair.toJson()),
+        jsonEncode(
+          newTokenPair.toJson(),
+        ),
         headers: {
           HttpHeaders.contentTypeHeader: ContentType.json.mimeType,
         },
@@ -128,15 +161,15 @@ class AuthController {
 
   @Route.post("/logout")
   Future<Response> logout(Request request) async {
-    JWT? token = request.context['authDetails'] as JWT?;
+    String? tokenId = request.context['authDetails'] as String?;
 
-    if (token == null) {
+    if (tokenId == null) {
       return Response.forbidden(
         'Not authorised to perform this operation.',
       );
     }
 
-    await tokenService.removeRefreshToken(token.jwtId!);
+    await tokenService.removeRefreshToken(tokenId);
 
     return Response.ok('Successfully logged out');
   }

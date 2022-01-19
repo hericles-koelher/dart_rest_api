@@ -1,22 +1,26 @@
-import 'package:dart_jsonwebtoken/dart_jsonwebtoken.dart';
 import 'package:shelf/shelf.dart';
 
 import '../../api.dart';
 
-Middleware authMiddleware(String secret) {
+Middleware authMiddleware(String secret, ITokenService tokenService) {
   return (Handler innerHandler) {
     return (Request request) async {
-      final authHeader = request.headers['authorization'];
+      var authHeader = request.headers['authorization'];
       String? token;
-      JWT? jwt;
+      String? tokenId;
 
       if (authHeader != null && authHeader.startsWith('Bearer ')) {
         token = authHeader.substring(7);
-        jwt = TokenService.verifyToken(token, secret);
+
+        try {
+          tokenId = tokenService.getTokenId(token);
+        } on TokenValidationException {
+          //
+        }
       }
 
       var updatedRequest = request.change(context: {
-        'authDetails': jwt,
+        'authDetails': tokenId,
       });
 
       return await innerHandler(updatedRequest);

@@ -6,7 +6,7 @@ import 'package:uuid/uuid.dart';
 const _tokenDuration = Duration(minutes: 30);
 
 // Using the rotation strategy to invalidate jwt's.
-class TokenService {
+class TokenService implements ITokenService {
   final String secret;
   final String host;
   late final Command _cache;
@@ -33,6 +33,7 @@ class TokenService {
     );
   }
 
+  @override
   Future<TokenPair> createTokenPair(String userId) async {
     final jwtId = Uuid().v4();
 
@@ -58,6 +59,46 @@ class TokenService {
     return TokenPair(token, refreshToken);
   }
 
+  @override
+  Future<dynamic> getRefreshToken(String tokenId) async {
+    return await _cache.get('$_prefix:$tokenId');
+  }
+
+  @override
+  Future<void> removeRefreshToken(String tokenId) async {
+    await _cache.send_object(['EXPIRE', '$_prefix:$tokenId', '-1']);
+  }
+
+  @override
+  String getTokenId(String token) {
+    try {
+      return JWT.verify(token, SecretKey(secret)).jwtId!;
+    } on JWTError catch (e) {
+      throw TokenValidationException(e.message);
+    }
+  }
+
+  @override
+  String getUserId(String token) {
+    try {
+      return JWT.verify(token, SecretKey(secret)).subject!;
+    } on JWTError catch (e) {
+      throw TokenValidationException(e.message);
+    }
+  }
+
+  @override
+  bool isValidToken(String token) {
+    try {
+      JWT.verify(token, SecretKey(secret));
+
+      return true;
+    } on JWTError catch (err) {
+      print(err);
+      return false;
+    }
+  }
+
   Future<void> _addRefreshTokenToRedis(
     String id,
     String token,
@@ -65,14 +106,6 @@ class TokenService {
   ) async {
     await _cache.send_object(['SET', '$_prefix:$id', token]);
     await _cache.send_object(['EXPIRE', '$_prefix:$id', expiry.inSeconds]);
-  }
-
-  Future<dynamic> getRefreshToken(String id) async {
-    return await _cache.get('$_prefix:$id');
-  }
-
-  Future<void> removeRefreshToken(String id) async {
-    await _cache.send_object(['EXPIRE', '$_prefix:$id', '-1']);
   }
 
   String _generateJwt({
@@ -92,16 +125,5 @@ class TokenService {
     );
 
     return jwt.sign(SecretKey(secret), expiresIn: expiry);
-  }
-
-  static JWT? verifyToken(String token, String secret) {
-    try {
-      return JWT.verify(token, SecretKey(secret));
-    } on JWTExpiredError {
-      return null;
-    } on JWTError catch (err) {
-      print(err);
-      return null;
-    }
   }
 }
