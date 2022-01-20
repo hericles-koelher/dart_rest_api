@@ -18,7 +18,7 @@ class MongoUserRepository extends MongoBaseRepository
     required String password,
   }) async {
     if (await _isEmailRegistered(email)) {
-      throw UserValidationException("User email already registered");
+      throw UserDataValidationException("User email already registered");
     }
 
     // Validating user entity...
@@ -50,7 +50,7 @@ class MongoUserRepository extends MongoBaseRepository
     );
 
     if (userJson == null) {
-      throw UserValidationException("User not found");
+      throw UserDataValidationException("User not found");
     }
 
     return User.fromJson(userJson);
@@ -63,7 +63,7 @@ class MongoUserRepository extends MongoBaseRepository
     );
 
     if (userJson == null) {
-      throw UserValidationException("User not found");
+      throw UserDataValidationException("User not found");
     }
 
     return User.fromJson(userJson);
@@ -75,5 +75,62 @@ class MongoUserRepository extends MongoBaseRepository
     );
 
     return user != null;
+  }
+
+  @override
+  Future<User> update(
+    int id, {
+    String? username,
+    String? email,
+    String? password,
+  }) async {
+    if (!containsNonNullData([username, email, password])) {
+      throw UserDataValidationException("User update data not informed");
+    }
+
+    validateNonNullUserData(
+      username: username,
+      email: email,
+      password: password,
+    );
+
+    var userJson = await users.findOne(
+      where.eq("id", id),
+    );
+
+    if (userJson == null) {
+      throw UserDataValidationException("User not found");
+    }
+
+    if (username != null) {
+      userJson["username"] = username;
+    }
+
+    if (email != null) {
+      var userEmail = await users.findOne(
+        where.eq("email", email),
+      );
+
+      if (userEmail != null) {
+        throw UserDataValidationException("Email already in use");
+      }
+
+      userJson["email"] = email;
+    }
+
+    if (password != null) {
+      userJson["password"] = hashPassword(password, userJson["salt"]);
+    }
+
+    users.update(where.eq("id", id), userJson);
+
+    return User.fromJson(userJson);
+  }
+
+  @override
+  Future<void> delete(int id) async {
+    await users.deleteOne(
+      where.eq("id", id),
+    );
   }
 }

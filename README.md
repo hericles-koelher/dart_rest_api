@@ -47,8 +47,8 @@ Dart REST API - is just an little project made with the purpose of study back-en
 
 - [x] User register
 - [x] User auth with JsonWebToken
-- [ ] User account update
-- [ ] User account delete
+- [x] User account update
+- [x] User account delete
 - [x] CRUD operations with [Expressions](./lib/src/domain/entities/expression.dart)
 - [x] Only logged users have authorization to access data from "expressions" endpoint
 
@@ -60,21 +60,14 @@ Dart REST API - is just an little project made with the purpose of study back-en
 
 ### Pre-requisites
 
-Before you begin, you will need to have [Dart](https://dart.dev/), [Docker](https://www.docker.com/) and any IDE of your choice installed and configured in your machine.
+Before you begin, you will need to have [Docker](https://www.docker.com/) installed and configured in your machine.
 
 #### Running the application
 
-Step 1 - From the root folder run docker-compose and create the necessary containers.
+From the root folder run docker-compose and create the necessary containers.
 
 ```bash
 $ docker-compose up -d
-```
-
-Step 2 - Open the project with your IDE and run it by clicking play or via command line with:
-
-```bash
-# command line in the root of your project
-$ dart run bin/server.dart
 ```
 
 ---

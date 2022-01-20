@@ -26,9 +26,40 @@ void validateUserCreationData({
   }
 
   if (flag) {
-    throw UserValidationException(message);
+    throw UserDataValidationException(message);
   }
 }
+
+void validateNonNullUserData({
+  String? username,
+  String? email,
+  String? password,
+}) {
+  bool flag = false;
+  String message = "Errors were found during data validation:\n";
+
+  if (username != null && username.isEmpty) {
+    flag = true;
+    message += "\tUsername can't be empty\n";
+  }
+
+  if (email != null && !isEmail(email)) {
+    flag = true;
+    message += "\tInvalid e-mail\n";
+  }
+
+  if (password != null && !isLength(password, 8)) {
+    flag = true;
+    message += "\tPassword must have at least 8 characters\n";
+  }
+
+  if (flag) {
+    throw UserDataValidationException(message);
+  }
+}
+
+bool containsNonNullData(List<Object?> dataList) =>
+    dataList.where((element) => element != null).isNotEmpty;
 
 void validateExpression(String expression, String meaning) {
   if (expression.isEmpty) {

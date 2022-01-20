@@ -7,20 +7,23 @@ Middleware authMiddleware(String secret, ITokenService tokenService) {
     return (Request request) async {
       var authHeader = request.headers['authorization'];
       String? token;
-      String? tokenId;
+      Map<String, String>? authDetails;
 
       if (authHeader != null && authHeader.startsWith('Bearer ')) {
         token = authHeader.substring(7);
 
         try {
-          tokenId = tokenService.getTokenId(token);
+          authDetails = {
+            "tokenId": tokenService.getTokenId(token),
+            "userId": tokenService.getUserId(token),
+          };
         } on TokenValidationException {
           //
         }
       }
 
       var updatedRequest = request.change(context: {
-        'authDetails': tokenId,
+        'authDetails': authDetails,
       });
 
       return await innerHandler(updatedRequest);

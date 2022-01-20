@@ -49,7 +49,7 @@ class AuthController {
         HttpStatus.badRequest,
         body: e.message,
       );
-    } on UserValidationException catch (e) {
+    } on UserDataValidationException catch (e) {
       return Response(
         HttpStatus.badRequest,
         body: e.message,
@@ -106,7 +106,7 @@ class AuthController {
         HttpStatus.badRequest,
         body: e.message,
       );
-    } on UserValidationException {
+    } on UserDataValidationException {
       return Response(
         HttpStatus.badRequest,
         body: "Incorrect email and/or password",
@@ -179,17 +179,79 @@ class AuthController {
 
   @Route.post("/logout")
   Future<Response> logout(Request request) async {
-    String? tokenId = request.context['authDetails'] as String?;
+    Map<String, String>? authDetails =
+        request.context["authDetails"] as Map<String, String>?;
 
-    if (tokenId == null) {
+    if (authDetails == null) {
       return Response.forbidden(
         'Not authorised to perform this operation.',
       );
     }
 
-    await tokenService.removeRefreshToken(tokenId);
+    await tokenService.removeRefreshToken(
+      authDetails["tokenId"]!,
+    );
 
     return Response.ok('Successfully logged out');
+  }
+
+  @Route.put("/updateInfo")
+  Future<Response> updateInfo(Request request) async {
+    Map<String, String>? authDetails =
+        request.context["authDetails"] as Map<String, String>?;
+
+    if (authDetails == null) {
+      return Response.forbidden(
+        'Not authorised to perform this operation.',
+      );
+    }
+
+    try {
+      var json = jsonDecode(
+        await request.readAsString(),
+      );
+
+      await userRepository.update(
+        int.parse(authDetails["userId"]!),
+        username: json["username"],
+        email: json["email"],
+        password: json["password"],
+      );
+
+      return Response.ok('User information successfully updated');
+    } on FormatException catch (e) {
+      return Response(
+        HttpStatus.badRequest,
+        body: e.message,
+      );
+    } on UserDataValidationException catch (e) {
+      return Response(
+        HttpStatus.badRequest,
+        body: e.message,
+      );
+    }
+  }
+
+  @Route.delete("/deleteAccount")
+  Future<Response> deleteAccount(Request request) async {
+    Map<String, String>? authDetails =
+        request.context["authDetails"] as Map<String, String>?;
+
+    if (authDetails == null) {
+      return Response.forbidden(
+        'Not authorised to perform this operation.',
+      );
+    }
+
+    await tokenService.removeRefreshToken(
+      authDetails["tokenId"]!,
+    );
+
+    await userRepository.delete(
+      int.parse(authDetails["userId"]!),
+    );
+
+    return Response.ok('User successfully deleted');
   }
 
   Handler get handler => _$AuthControllerRouter(this);

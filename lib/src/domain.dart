@@ -13,7 +13,7 @@ export 'domain/repositories/mongo_expression_repository.dart';
 
 // Exceptions
 
-export 'domain/exceptions/user_validation_exception.dart';
+export 'domain/exceptions/user_data_validation_exception.dart';
 export 'domain/exceptions/expression_validation_exception.dart';
 export 'domain/exceptions/expression_not_found_exception.dart';
 
