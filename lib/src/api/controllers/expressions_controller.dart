@@ -28,7 +28,6 @@ class ExpressionsController {
       Map<String, dynamic> json = jsonDecode(
         await request.readAsString(),
       );
-
       if (json.isEmpty ||
           !json.containsKey("expression") ||
           !json.containsKey("meaning")) {
@@ -43,8 +42,9 @@ class ExpressionsController {
         json["meaning"],
       );
 
-      return Response.ok(
-        jsonEncode(expression.toJson()),
+      return Response(
+        HttpStatus.created,
+        body: jsonEncode(expression.toJson()),
         headers: {
           HttpHeaders.contentTypeHeader: ContentType.json.mimeType,
         },

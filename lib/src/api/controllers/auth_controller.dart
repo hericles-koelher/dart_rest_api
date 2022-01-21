@@ -43,7 +43,10 @@ class AuthController {
         password: json["password"],
       );
 
-      return Response.ok("User successfully registered");
+      return Response(
+        HttpStatus.created,
+        body: "User successfully registered",
+      );
     } on FormatException catch (e) {
       return Response(
         HttpStatus.badRequest,

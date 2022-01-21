@@ -22,7 +22,7 @@
 </p>
 
 <h4 align="center">
-	 Status: Under Development
+	 Status: Finished
 </h4>
 
 <p align="center">
@@ -39,7 +39,7 @@
 
 ## About
 
-Dart REST API - is just an little project made with the purpose of study back-end development with [Dart](https://dart.dev).
+Dart REST API is just an little project made with the purpose of study back-end development with [Dart](https://dart.dev).
 
 ---
 
@@ -56,7 +56,332 @@ Dart REST API - is just an little project made with the purpose of study back-en
 
 ## How it works
 
---- [ Session Under Development ] ---
+This API has only two endpoints:
+
+- Auth
+- Expressions
+
+**Note**: To realize actions as an authenticated user it's required the request header contains the field "Authorization" with the following value "Bearer {accessToken}", where {accessToken} should be replaced with your auth token.
+
+### Endpoint _/auth_
+
+---
+
+This endpoint handle all actions related to an user:
+
+- Register
+- Login/Logout
+- Update Info
+- Delete Account
+
+<br />
+
+#### **[POST]** _/auth/register_
+
+**Description**: Register an user on system. On success returns an answer with status code 201 and a string with a success message. In case this process fail, then returns an answer with status 4XX and a string with a better description of the problem.
+
+Examples:
+
+- Request address:
+
+  ```HTTP
+  http://localhost:8080/auth/register
+  ```
+
+- Request body::
+
+  ```JSON
+  {
+    "username" : "Dobby",
+    "email" : "dobbyIsAFreeElf@gmail.com",
+    "password" : "#FreeElves"
+  }
+  ```
+
+- Answer:
+
+  ```
+  User successfully registered
+  ```
+
+<br />
+
+#### **[POST]** _/auth/login_
+
+**Description**: Performs the user login on system. On success returns an answer with status code 200 and a [JSON](https://www.json.org/json-en.html) with two 'tokens', being one for auth (expires in 15 minutes) and the other to renew the first one (expires in 30 minutes). In case this process fail, then returns an answer with status 4XX and a string with a better description of the problem.
+
+Examples:
+
+- Request address:
+
+  ```HTTP
+  http://localhost:8080/auth/login
+  ```
+
+- Request body:
+
+  ```JSON
+  {
+    "email" : "dobbyIsAFreeElf@gmail.com",
+    "password" : "#FreeElves"
+  }
+  ```
+
+- Answer:
+
+  ```JSON
+  {
+    "token" : "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NDI3NzEzMDYsImV4cCI6MTY0Mjc3MzEwNiwic3ViIjoiMSIsImlzcyI6ImxvY2FsaG9zdCIsImp0aSI6IjA2ZmVhZmI5LTA4MTEtNGRhZS05YTljLTc5NjBmNzVlYTZhMSJ9.76LagMOKPVgY0-ZScMDhlRjpwvbXESqUCGDhbbPPbQQ",
+    "refreshToken" : "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NDI3NzEzMDYsImV4cCI6MTY0Mjc3NDkwNiwic3ViIjoiMSIsImlzcyI6ImxvY2FsaG9zdCIsImp0aSI6IjA2ZmVhZmI5LTA4MTEtNGRhZS05YTljLTc5NjBmNzVlYTZhMSJ9.A4YkORrXTZOjnANhisPRSAED_PLgLTA6biIVkSz11pk"
+  }
+  ```
+
+<br />
+
+#### **[POST]** _/auth/refreshToken_
+
+**Description**: Renew an user token on system. On success returns an answer with status code 200 and a [JSON](https://www.json.org/json-en.html) with two 'tokens', being one for auth (expires in 15 minutes) and the other to renew the first one (expires in 30 minutes). In case this process fail, then returns an answer with status 4XX and a string with a better description of the problem.
+
+Examples:
+
+- Request address:
+
+  ```HTTP
+  http://localhost:8080/auth/refreshToken
+  ```
+
+- Request body:
+
+  ```JSON
+  {
+    "refreshToken" : "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NDI3NzEzMDYsImV4cCI6MTY0Mjc3NDkwNiwic3ViIjoiMSIsImlzcyI6ImxvY2FsaG9zdCIsImp0aSI6IjA2ZmVhZmI5LTA4MTEtNGRhZS05YTljLTc5NjBmNzVlYTZhMSJ9.A4YkORrXTZOjnANhisPRSAED_PLgLTA6biIVkSz11pk"
+  }
+  ```
+
+- Answer:
+
+  ```JSON
+  {
+    "token" : "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NDI3NzI1MDMsImV4cCI6MTY0Mjc3NDMwMywic3ViIjoiMSIsImlzcyI6ImxvY2FsaG9zdCIsImp0aSI6Ijc0ODYyMzUzLWQwZmUtNDk4OC1iOWQwLWZiN2YyNTJhZjI3YyJ9.QEqezAmz333iQNVpsWG6UZUidLDOKHgx2KWyc-lW9KI",
+    "refreshToken" : "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NDI3NzI1MDMsImV4cCI6MTY0Mjc3NjEwMywic3ViIjoiMSIsImlzcyI6ImxvY2FsaG9zdCIsImp0aSI6Ijc0ODYyMzUzLWQwZmUtNDk4OC1iOWQwLWZiN2YyNTJhZjI3YyJ9.SjmSc23465l35-kJQneEfFe8mTohv9G9FSiZ0-2oFIM"
+  }
+  ```
+
+<br />
+
+#### **[POST]** _/auth/logout_
+
+**Description**: Performs an user logout on system and revoke their renew token. On success returns an answer with status code 200 and and a string with a success message. In case this process fail, then returns an answer with status 4XX and a string with a better description of the problem (probably unauthorized user exception).
+
+Examples:
+
+- Request address:
+
+  ```HTTP
+  http://localhost:8080/auth/logout
+  ```
+
+- Answer:
+
+  ```
+  Successfully logged out
+  ```
+
+<br />
+
+#### **[PUT]** _/auth/updateInfo_
+
+**Description**: Updates an user info on system. On success returns an answer with status code 200 and a string with a success message. In case this process fail, then returns an answer with status 4XX and a string with a better description of the problem.
+
+Examples:
+
+- Request address:
+
+  ```HTTP
+  http://localhost:8080/auth/updateInfo
+  ```
+
+- Request body:
+
+  ```JSON
+  {
+    "username" : "Free Dobby",
+    "email" : "justDobby@gmail.com",
+    "password" : "ThanksHarry"
+  }
+  ```
+
+- Answer
+
+  ```
+  User information successfully updated
+  ```
+
+<br />
+
+#### **[DELETE]** _/auth/deleteAccount_
+
+**Description**: Deletes an user on system and revokes their renew token. On success returns an answer with status code 200 and a string with a success message. In case this process fail, then returns an answer with status 4XX and a string with a better description of the problem (probably unauthenticated user exception).
+
+Examples:
+
+- Request address:
+
+  ```HTTP
+  http://localhost:8080/auth/deleteAccount
+  ```
+
+- Answer:
+
+  ```
+  User successfully deleted
+  ```
+
+### Endpoint _/expressions_
+
+---
+
+This endpoint make it possible to an authenticated user perform CRUD operations on [Expressions](./lib/src/domain/entities/expression.dart).
+
+<br />
+
+#### **[POST]** _/expressions_
+
+**Description**: Creates an expression on system. On success returns an answer with status code 201 and a JSON with the created expression. In case this process fail, then returns an answer with status 4XX and a string with a better description of the problem.
+
+Examples:
+
+- Request address:
+
+  ```HTTP
+  http://localhost:8080/expressions
+  ```
+
+- Request body::
+
+  ```JSON
+  {
+    "expression" : "Go on a wild goose chase",
+    "meaning" : "To do something pointless"
+  }
+  ```
+
+- Answer:
+
+  ```JSON
+  {
+    "id" : 1,
+    "expression" : "Go on a wild goose chase",
+    "meaning" : "To do something pointless",
+    "lastUpdate" : "2022-01-21T13:58:06.578517"
+  }
+  ```
+
+<br />
+
+#### **[GET]** _/expressions_
+
+**Description**: Get all expressions on system. On success returns an answer with status code 200 and a JSON with a list of expressions. In case this process fail, then returns an answer with status 4XX and a string with a better description of the problem.
+
+Examples:
+
+- Request address:
+
+  ```HTTP
+  http://localhost:8080/expressions
+  ```
+
+- Answer:
+
+  ```JSON
+  [
+    {
+    "id" : 0,
+    "expression" : "Get a taste of your own medicine",
+    "meaning" : "Get treated the way you've been treating others (negative)",
+    "lastUpdate" : "2022-01-19T19:34:09.244124"
+    },
+    {
+    "id" : 1,
+    "expression" : "Go on a wild goose chase",
+    "meaning" : "To do something pointless",
+    "lastUpdate" : "2022-01-21T13:58:06.578517"
+    }
+  ]
+  ```
+
+<br />
+
+#### **[GET]** _/expressions/{id}_
+
+**Description**: Get an expression on system. On success returns an answer with status code 200 and a JSON with the referred expression. In case this process fail, then returns an answer with status 4XX and a string with a better description of the problem.
+
+Examples:
+
+- Request address:
+
+  ```HTTP
+  http://localhost:8080/expressions/1
+  ```
+
+- Answer:
+
+  ```JSON
+  {
+    "id" : 1,
+    "expression" : "Go on a wild goose chase",
+    "meaning" : "To do something pointless",
+    "lastUpdate" : "2022-01-21T13:58:06.578517"
+  }
+  ```
+
+<br />
+
+#### **[PUT]** _/expressions/{id}_
+
+**Description**: Updates an expression on system. On success returns an answer with status code 200 and a JSON with the updated expression. In case this process fail, then returns an answer with status 4XX and a string with a better description of the problem.
+
+Examples:
+
+- Request address:
+
+  ```HTTP
+  http://localhost:8080/expressions/1
+  ```
+
+- Request body::
+
+  ```JSON
+  {
+    "expression" : "Go on a wild goose chase",
+    "meaning" : "Bla bla bla",
+  }
+  ```
+
+- Answer:
+
+  ```JSON
+  {
+    "id" : 1,
+    "expression" : "Go on a wild goose chase",
+    "meaning" : "Bla bla bla",
+    "lastUpdate" : "2022-01-21T13:59:06.384333"
+  }
+  ```
+
+<br />
+
+#### **[DELETE]** _/expressions/{id}_
+
+**Description**: Deletes an expression on system. On success returns an answer with status code 204. In case this process fail, then returns an answer with status 4XX and a string with a better description of the problem.
+
+Examples:
+
+- Request address:
+
+  ```HTTP
+  http://localhost:8080/expressions/1
+  ```
 
 ### Pre-requisites
 
