@@ -61,7 +61,7 @@ This API has only two endpoints:
 - Auth
 - Expressions
 
-**Note**: To realize actions as an authenticated user it's required the request header contains the field "Authorization" with the following value "Bearer {accessToken}", where {accessToken} should be replaced with your auth token.
+**Note**: To realize actions as an authenticated user the request header must have the field "Authorization" with the following value "Bearer {accessToken}", where {accessToken} should be replaced with your auth token.
 
 ### Endpoint _/auth_
 
@@ -78,7 +78,7 @@ This endpoint handle all actions related to an user:
 
 #### **[POST]** _/auth/register_
 
-**Description**: Register an user on system. On success returns an answer with status code 201 and a string with a success message. In case this process fail, then returns an answer with status 4XX and a string with a better description of the problem.
+**Description**: Register an user on system. On success, returns an answer with status code 201 and a string with a success message. In case this process fail, then returns an answer with status 4XX and a string with a better description of the problem.
 
 Examples:
 
@@ -108,7 +108,7 @@ Examples:
 
 #### **[POST]** _/auth/login_
 
-**Description**: Performs the user login on system. On success returns an answer with status code 200 and a [JSON](https://www.json.org/json-en.html) with two 'tokens', being one for auth (expires in 15 minutes) and the other to renew the first one (expires in 30 minutes). In case this process fail, then returns an answer with status 4XX and a string with a better description of the problem.
+**Description**: Performs the user login on system. On success, returns an answer with status code 200 and a [JSON](https://www.json.org/json-en.html) with two 'tokens', being one for auth (expires in 15 minutes) and the other to renew the first one (expires in 30 minutes). In case this process fail, then returns an answer with status 4XX and a string with a better description of the problem.
 
 Examples:
 
@@ -140,7 +140,7 @@ Examples:
 
 #### **[POST]** _/auth/refreshToken_
 
-**Description**: Renew an user token on system. On success returns an answer with status code 200 and a [JSON](https://www.json.org/json-en.html) with two 'tokens', being one for auth (expires in 15 minutes) and the other to renew the first one (expires in 30 minutes). In case this process fail, then returns an answer with status 4XX and a string with a better description of the problem.
+**Description**: Renew an user token on system. On success, returns an answer with status code 200 and a [JSON](https://www.json.org/json-en.html) with two 'tokens', being one for auth (expires in 15 minutes) and the other to renew the first one (expires in 30 minutes). In case this process fail, then returns an answer with status 4XX and a string with a better description of the problem.
 
 Examples:
 
@@ -171,7 +171,7 @@ Examples:
 
 #### **[POST]** _/auth/logout_
 
-**Description**: Performs an user logout on system and revoke their renew token. On success returns an answer with status code 200 and and a string with a success message. In case this process fail, then returns an answer with status 4XX and a string with a better description of the problem (probably unauthorized user exception).
+**Description**: Performs an user logout on system and revoke their renew token. On success, returns an answer with status code 200 and a string with a success message. In case this process fail, then returns an answer with status 4XX and a string with a better description of the problem (probably unauthorized user exception).
 
 Examples:
 
@@ -191,7 +191,7 @@ Examples:
 
 #### **[PUT]** _/auth/updateInfo_
 
-**Description**: Updates an user info on system. On success returns an answer with status code 200 and a string with a success message. In case this process fail, then returns an answer with status 4XX and a string with a better description of the problem.
+**Description**: Updates an user info on system. On success, returns an answer with status code 200 and a string with a success message. In case this process fail, then returns an answer with status 4XX and a string with a better description of the problem.
 
 Examples:
 
@@ -221,7 +221,7 @@ Examples:
 
 #### **[DELETE]** _/auth/deleteAccount_
 
-**Description**: Deletes an user on system and revokes their renew token. On success returns an answer with status code 200 and a string with a success message. In case this process fail, then returns an answer with status 4XX and a string with a better description of the problem (probably unauthenticated user exception).
+**Description**: Deletes an user on system and revokes their renew token. On success, returns an answer with status code 200 and a string with a success message. In case this process fail, then returns an answer with status 4XX and a string with a better description of the problem (probably unauthenticated user exception).
 
 Examples:
 
@@ -247,7 +247,7 @@ This endpoint make it possible to an authenticated user perform CRUD operations 
 
 #### **[POST]** _/expressions_
 
-**Description**: Creates an expression on system. On success returns an answer with status code 201 and a JSON with the created expression. In case this process fail, then returns an answer with status 4XX and a string with a better description of the problem.
+**Description**: Creates an expression on system. On success, returns an answer with status code 201 and a JSON with the created expression. In case this process fail, then returns an answer with status 4XX and a string with a better description of the problem.
 
 Examples:
 
@@ -281,7 +281,7 @@ Examples:
 
 #### **[GET]** _/expressions_
 
-**Description**: Get all expressions on system. On success returns an answer with status code 200 and a JSON with a list of expressions. In case this process fail, then returns an answer with status 4XX and a string with a better description of the problem.
+**Description**: Get all expressions on system. On success, returns an answer with status code 200 and a JSON with a list of expressions. In case this process fail, then returns an answer with status 4XX and a string with a better description of the problem.
 
 Examples:
 
@@ -314,7 +314,7 @@ Examples:
 
 #### **[GET]** _/expressions/{id}_
 
-**Description**: Get an expression on system. On success returns an answer with status code 200 and a JSON with the referred expression. In case this process fail, then returns an answer with status 4XX and a string with a better description of the problem.
+**Description**: Get an expression on system. On success, returns an answer with status code 200 and a JSON with the referred expression. In case this process fail, then returns an answer with status 4XX and a string with a better description of the problem.
 
 Examples:
 
@@ -339,7 +339,7 @@ Examples:
 
 #### **[PUT]** _/expressions/{id}_
 
-**Description**: Updates an expression on system. On success returns an answer with status code 200 and a JSON with the updated expression. In case this process fail, then returns an answer with status 4XX and a string with a better description of the problem.
+**Description**: Updates an expression on system. On success, returns an answer with status code 200 and a JSON with the updated expression. In case this process fail, then returns an answer with status 4XX and a string with a better description of the problem.
 
 Examples:
 
@@ -373,7 +373,7 @@ Examples:
 
 #### **[DELETE]** _/expressions/{id}_
 
-**Description**: Deletes an expression on system. On success returns an answer with status code 204. In case this process fail, then returns an answer with status 4XX and a string with a better description of the problem.
+**Description**: Deletes an expression on system. On success, returns an answer with status code 204. In case this process fail, then returns an answer with status 4XX and a string with a better description of the problem.
 
 Examples:
 
